@@ -9,7 +9,7 @@ class HubbSite :
     """ unsure about return variables here """
     def authHandshake(clientID: string, clientSecret: string, scope: string) -> string,string,string:
         url = 'https://ngapi.hubb.me/auth/token'
-        creds = {'client_id': clientID, 'client_secret': clientSecret, 'scope': scope}
+        creds = {'client_id': clientID, 'client_secret': clientSecret, 'scope': scope, 'grant_type': 'client_credentials'}
         res = requests.post(url, data = creds, headers = {"Content-Type": "application/x-www-form-urlencoded"})
         resp = json.load(res)
         """ not sure this json reading works """
