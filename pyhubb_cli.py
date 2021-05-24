@@ -1,7 +1,7 @@
 import pyhubb
 import pickle
 import fire
-import os.path as path
+import os
 import time
 
 # Pickling to cache data while CLI runs
@@ -22,7 +22,7 @@ def load_object(filename):
 
 # Are the pickled client info objs expired?
 def expired_object(filename):
-    file_time = path.getmtime(filename)
+    file_time = os.path.getmtime(filename)
     if ((time.time() - file_time) / 3600 > 23):
         return true # Should use this boolean to delete the pickle file and make a new one
     else:
@@ -32,7 +32,18 @@ class pyhubbcli:
     """
     Command Line Interface (CLI) to the pyhubb python package for Hubb.me's API
     """
-    def init(self, eventID: str, accessToken: str, expiry:str, version: str = 'v1'):
+    def __init__(self):
+        if os.path.exists('client.pickle'):
+            age = expired_object('client.pickle')
+            if age == true:
+                os.remove('client.pickle')
+                print("WARNING: Client data expired!\n")
+            else:
+                print("WARNING: Client data is not expired!\n")
+        else:
+            print("WARNING: Client data pickle does not exist! Run pyhubb_cli init\n")
+
+    def init(eventID: str, accessToken: str, expiry:str, version: str = 'v1'):
         """
         Initializes client object with Hubb.me API endpoint data. Use Postman to get your accessToken.
         :param eventID: aka 'scope' or a value which represents which Hubb site this client works on
@@ -42,6 +53,15 @@ class pyhubbcli:
         """
         client = pyhubb(eventID, accessToken, 'bearer', expiry, version)
         save_object(client)
+    def request(fields: str, section: str = 'Sessions', query: str = 'expand'):
+        """
+        Make requests to the Hubb API at various endpoints (or sections) with various OData query parameters and delimiting fields
+        :param fields: fields vary with the endpoint selected. View the docs at https://ngapi.hubb.me/swagger/ui/index for more information, these are all GET requests.
+        :param section: or endpoint. The part of the Hubb site you wish to get data from. Some examples are: Sessions, Locations, Users, Sponsors, etc. More can be found at https://ngapi.hubb.me/swagger/ui/index
+        :param query: Options which allow you to 'expand' a data field for details, 'filter' the data to what you want to see, 'select' to limit data fields returned, 'order' data by certain parameters, or limit the data to the 'top' X results (put your number in the fields parameter)
+        """
+        client = load_object('client.pickle')
 
 if __name__ == "__main__":
-    fire.Fire(pyhubbcli)
+    fire.core.Display = lambda lines, out: print(*lines, file=out) #hacky solution to get fire to print to stdout
+    fire.Fire(pyhubbcli, name='pyhubbcli')
