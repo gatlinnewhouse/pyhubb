@@ -1,24 +1,6 @@
 import requests
 import json
 
-class HubbSite :
-    def __init__(self):
-        print("Apply for Hubb API Access here: https://apirequest.hubb.me/")
-    
-    """ unsure about return variables here """
-    def authHandshake(clientID: string, clientSecret: string, scope: string) -> string,string,string:
-        url = 'https://ngapi.hubb.me/auth/token'
-        creds = {'client_id': clientID, 'client_secret': clientSecret, 'scope': scope, 'grant_type': 'client_credentials'}
-        res = requests.post(url, data = creds, headers = {"Content-Type": "application/x-www-form-urlencoded"})
-        resp = json.load(res)
-        print(resp.json())
-        """ not sure this json reading works """
-        for p in resp:
-            accessToken = (p['access_token'])
-            tokenType = (p['token_type'])
-            expiry = (p['expires_in'])
-        return accessToken, tokenType, expiry
-
 class client :
     def __init__(eventID, accessToken, tokenType, expiry, version):
         self.url = 'https://ngapi.hubb.me/api/' + version + '/' + eventID + '/'
@@ -65,3 +47,4 @@ class client :
         details = requests.get(self.url + 'Myconference?$filter=AttendeeId eq ' + attendeeID, headers=self.headers)
         print(details.json())
         return details.json()
+
