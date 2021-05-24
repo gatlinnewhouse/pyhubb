@@ -3,11 +3,11 @@ Python API library for Hubb.me
 
 ### Example CLI
 ```bash
-NAME                     
+NAME
   pyhubb_cli.py - Command Line Interface (CLI) to the pyhubb python package for Hubb.me's API
-SYNOPSIS 
-  pyhubb_cli.py COMMAND                                                                                                                                                           
-DESCRIPTION                     
+SYNOPSIS
+  pyhubb_cli.py COMMAND
+DESCRIPTION
   Command Line Interface (CLI) to the pyhubb python package for Hubb.me's API
   COMMANDS
     COMMAND is one of the following:
