@@ -24,25 +24,30 @@ def load_object(filename):
 def expired_object(filename):
     file_time = os.path.getmtime(filename)
     if ((time.time() - file_time) / 3600 > 23):
-        return true # Should use this boolean to delete the pickle file and make a new one
+        # Should use this boolean to delete the pickle file and make a new one
+        return True
     else:
-        return false # Should use this boolean to use the existing pickle
+        # Should use this boolean to use the existing pickle
+        return False
+
+def exists(filename):
+    if os.path.exists(filename):
+        age = expired_object(filename)
+        if age == True:
+            os.remove(filename)
+            print("WARNING: Client data expired! Removed old pickled credentials. Run pyhubb_cli init\n")
+        else:
+            print("VERIFIED: Client data is not expired!\n")
+    else:
+        raise Exception("Client data pickle does not exist! Run pyhubb_cli init\n")
 
 class pyhubbcli:
     """
     Command Line Interface (CLI) to the pyhubb python package for Hubb.me's API
     """
     def __init__(self):
-        if os.path.exists('client.pickle'):
-            age = expired_object('client.pickle')
-            if age == true:
-                os.remove('client.pickle')
-                print("WARNING: Client data expired!\n")
-            else:
-                print("WARNING: Client data is not expired!\n")
-        else:
-            print("WARNING: Client data pickle does not exist! Run pyhubb_cli init\n")
-
+        pass
+       
     def init(eventID: str, accessToken: str, expiry:str, version: str = 'v1'):
         """
         Initializes client object with Hubb.me API endpoint data. Use Postman to get your accessToken.
@@ -51,8 +56,8 @@ class pyhubbcli:
         :param expiry: number (in seconds) which is when your authentication will expire
         :param version: API version, set by default to v1
         """
-        client = pyhubb(eventID, accessToken, 'bearer', expiry, version)
-        save_object(client)
+        apiclient = pyhubb.client(eventID, accessToken, 'bearer', expiry, version)
+        save_object(apiclient)
     def request(fields: str, section: str = 'Sessions', query: str = 'expand'):
         """
         Make requests to the Hubb API at various endpoints (or sections) with various OData query parameters and delimiting fields
@@ -60,8 +65,9 @@ class pyhubbcli:
         :param section: or endpoint. The part of the Hubb site you wish to get data from. Some examples are: Sessions, Locations, Users, Sponsors, etc. More can be found at https://ngapi.hubb.me/swagger/ui/index
         :param query: Options which allow you to 'expand' a data field for details, 'filter' the data to what you want to see, 'select' to limit data fields returned, 'order' data by certain parameters, or limit the data to the 'top' X results (put your number in the fields parameter)
         """
-        client = load_object('client.pickle')
+        exists('client.pickle')
+        apiclient = load_object('client.pickle')
 
 if __name__ == "__main__":
     fire.core.Display = lambda lines, out: print(*lines, file=out) #hacky solution to get fire to print to stdout
-    fire.Fire(pyhubbcli, name='pyhubbcli')
+    fire.Fire(pyhubbcli)

@@ -2,8 +2,8 @@ import requests
 import json
 
 class client :
-    def __init__(eventID, accessToken, tokenType, expiry, version):
-        self.url = 'https://ngapi.hubb.me/api/' + version + '/' + eventID + '/'
+    def __init__(self, eventID, accessToken, tokenType, expiry, version):
+        self.url = 'https://ngapi.hubb.me/api/' + str(version) + '/' + str(eventID) + '/'
         HTTP_LIB = requests.Session()
         self.accessToken = accessToken
         self.tokenType = tokenType
