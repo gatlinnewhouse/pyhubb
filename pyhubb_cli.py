@@ -1,7 +1,7 @@
 import pyhubb
 import fire
 
-class pyhubbcli(pyhubb.client):
+class pyhubbcli():
     """
     Command Line Interface (CLI) to the pyhubb python package for Hubb.me's API
     """
@@ -11,7 +11,7 @@ class pyhubbcli(pyhubb.client):
     def create(self, eventid: str, accessToken: str, expiry:str, version: str = 'v1'):
         """
         Initializes client object with Hubb.me API endpoint data. Use Postman to get your accessToken.
-        :param eventID:  four digit code given by account manager
+        :param eventid: four digit code given by account manager
         :param accessToken: the value from the initial handshake done with postman
         :param expiry: number (in seconds) which is when your authentication will expire
         :param version: API version, set by default to v1
