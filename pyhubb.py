@@ -1,5 +1,6 @@
 import requests
 import json
+import collections
 import pickle
 import os
 import time
@@ -44,25 +45,33 @@ def exists(filename):
     else:
         raise Exception("Client data pickle does not exist! Run pyhubb_cli create\n")
 
+# Prettyprint JSON to terminal
+def prettyJson(respon):
+    print(json.dumps(respon.json(), indent=4))
+
 class client(object):
     # Create client
     def __init__(self, eventID, accessToken, tokenType, expiry, version):
-        self.url = 'https://ngapi.hubb.me/api/' + str(version) + '/' + str(eventID) + '/'
-        HTTP_LIB = requests.Session()
+        self.eventID = eventID
         self.accessToken = accessToken
         self.tokenType = tokenType
         self.expiry = expiry
-        self.headers = {'Authorization': 'Bearer' + accessToken, 'Content-Type': 'application/json'}
-        save_object(self)
+        self.version = version
+        self.headers = {'Authorization': 'bearer ' + accessToken, 'Content-Type': 'application/json'}
+        self.url = 'https://ngapi.hubb.me/api/' + str(self.version) + '/' + str(self.eventID) + '/'
+        HTTP_LIB = requests.Session()
+        #save_object(self)
+    # Define a way to print a client obj to stdout
+    def __str__(self):
+        return "event ID: %s\n access token: %s\n type: %s\n expiry: %s\n version: %s\n headers: %s\n" % (self.eventID, self.accessToken, self.tokenType, self.expiry, self.version, self.headers)
     # This allows you to expand a data field.
     # If you're seeing a value of NULL or an empty array, 
     # but you expect there should be data, try "expanding" that value.
     def expand(self, section, fields) -> json:
-        exists('client.pickle')
-        load_object('client.pickle')
+        #print(self.url + section + '?expand=' + fields)
         details = requests.get(self.url + section + '?$expand=' + fields, headers=self.headers)
-        print(details.json())
-        return details.json()
+        prettyJson(details)
+        return details
     # This allows you to filter the data to only what you want to see.
     # Only items where the expression evaluates to TRUE are included in the response.
     def filt(self, section, fields) -> json:
