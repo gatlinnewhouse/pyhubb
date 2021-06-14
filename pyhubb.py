@@ -13,16 +13,6 @@ def save_object(obj):
     except Exception as ex:
         print("Error during pickling object (Possibly unsupported):", ex)
 
-# Open the pickle jar to grab the client info
-def load_object(filename):
-    try:
-        with open(filename, "rb") as f:
-            myinstance = pickle.load(f)
-        for k in myinstance.__dict__.keys():
-            setattr(client, k, getattr(myinstance, k))
-    except Exception as ex:
-        print("Error during unpickling object (Possibly unsupported):", ex)
-
 # Are the pickled client info objs expired?
 def expired_object(filename):
     file_time = os.path.getmtime(filename)
@@ -60,10 +50,18 @@ class client(object):
         self.headers = {'Authorization': 'bearer ' + accessToken, 'Content-Type': 'application/json'}
         self.url = 'https://ngapi.hubb.me/api/' + str(self.version) + '/' + str(self.eventID) + '/'
         HTTP_LIB = requests.Session()
-        #save_object(self)
+        save_object(self)
     # Define a way to print a client obj to stdout
     def __str__(self):
         return "event ID: %s\n access token: %s\n type: %s\n expiry: %s\n version: %s\n headers: %s\n" % (self.eventID, self.accessToken, self.tokenType, self.expiry, self.version, self.headers)
+    # Open the pickle jar to grab the client info
+    def load_object(filename):
+        try:
+            with open(filename, "rb") as f:
+                myinstance = pickle.loads(f.read())
+                return client(myinstance.eventID, myinstance.accessToken, myinstance.tokenType, myinstance.expiry, myinstance.version)
+        except Exception as ex:
+            print("Error during unpickling object (Possibly unsupported):", ex)
     # This allows you to expand a data field.
     # If you're seeing a value of NULL or an empty array, 
     # but you expect there should be data, try "expanding" that value.
@@ -76,23 +74,23 @@ class client(object):
     # Only items where the expression evaluates to TRUE are included in the response.
     def filt(self, section, fields) -> json:
         details = requests.get(self.url + section + '?$filter=' + fields, headers=self.headers)
-        print(details.json())
+        prettyJson(details)
         return details.json()
     # This can be used to limit the data fields with are returned with a call. 
     # You can select only certain fields to come through.
     def select(self, section, fields) -> json:
         details = requests.get(self.url + section + '?$select=' + fields, headers=self.headers)
-        print(details.json())
+        prettyJson(details)
         return details.json()
     # This will allow you to order the data by a certain parameter.
     def orderBy(self, section, fields) -> json:
         details = requests.get(self.url + section + '?$orderby=' + fields, headers=self.headers)
-        print(details.json())
+        prettyJson(details)
         return details.json()
     # This will allow you to limit the data that gets returned to a specific number.
     def top(self, section, fields) -> json:
-        details = requests.get(self.url + section + '?$top=' + fields, headers=self.headers)
-        print(details.json())
+        details = requests.get(self.url + section + '?$top=' + str(fields), headers=self.headers)
+        prettyJson(details)
         return details.json()
     # myConference grabs all the events/sessions on a given users schedule
     # It's recommended that you get the items for an individual user at a time.
@@ -101,6 +99,6 @@ class client(object):
     # $skip parameters to create a loop that will get all items.
     def myConference(self, attendeeID) -> json:
         details = requests.get(self.url + 'Myconference?$filter=AttendeeId eq ' + attendeeID, headers=self.headers)
-        print(details.json())
+        prettyJson(details)
         return details.json()
 
