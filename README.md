@@ -70,6 +70,8 @@ VERIFIED: Client data is not expired!
 ```
 The library function for requests will also return a json that you can parse/save/etc.
 
+---
+
 #### Help Messages
 ```bash
 gat@DESKTOP-CD2M3FT:Documents$ python pyhubb_cli.py
