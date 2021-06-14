@@ -5,14 +5,14 @@ Python API library for Hubb.me
 
 Initializing session after using postman to get API credentials, like an access token.
 ```bash
-gat@DESKTOP-CD2M3FT:/mnt/c/Users/GatlinNewhouse/DynamicEventsInc/Documents$ python pyhubb_cli.py create 'put your 4 digit event id here' 'put your api access token here' 'put your expiry here'
+gat@DESKTOP-CD2M3FT:Documents$ python pyhubb_cli.py create 'put your 4 digit event id here' 'put your api access token here' 'put your expiry here'
 Client created! Pickled locally                                
 ```
 Message returns that a client object for the API credentials was made and then saved locally.
 
 Example request and response:
 ```bash
-gat@DESKTOP-CD2M3FT:/mnt/c/Users/GatlinNewhouse/DynamicEventsInc/Documents$ python pyhubb_cli.py request Sessions top 1
+gat@DESKTOP-CD2M3FT:Documents$ python pyhubb_cli.py request Sessions top 1
 VERIFIED: Client data is not expired!
 [
   {
@@ -72,7 +72,7 @@ The library function for requests will also return a json that you can parse/sav
 
 #### Help Messages
 ```bash
-gat@DESKTOP-CD2M3FT:/mnt/c/Users/GatlinNewhouse/DynamicEventsInc/Documents$ python pyhubb_cli.py
+gat@DESKTOP-CD2M3FT:Documents$ python pyhubb_cli.py
 NAME
   pyhubb_cli.py - Command Line Interface (CLI) to the pyhubb python package for Hubb.me's API
 SYNOPSIS
@@ -88,7 +88,7 @@ DESCRIPTION
 ```
 
 ```bash
-gat@DESKTOP-CD2M3FT:/mnt/c/Users/GatlinNewhouse/DynamicEventsInc/Documents$ python pyhubb_cli.py create -h
+gat@DESKTOP-CD2M3FT:Documents$ python pyhubb_cli.py create -h
 INFO: Showing help with the command 'pyhubb_cli.py create -- --help'.
 
 NAME
@@ -122,7 +122,7 @@ NOTES
 ```
 
 ```bash
-gat@DESKTOP-CD2M3FT:/mnt/c/Users/GatlinNewhouse/DynamicEventsInc/Documents$ python pyhubb_cli.py request -h
+gat@DESKTOP-CD2M3FT:Documents$ python pyhubb_cli.py request -h
 INFO: Showing help with the command 'pyhubb_cli.py request -- --help'.
 
 NAME
