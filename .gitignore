@@ -1,0 +1,8 @@
+*.py
+*.pyc
+*.pickle
+*.swp
+dist/
+pyhubb.egg/
+pyhubb.egg-info/
+pyhubb/
