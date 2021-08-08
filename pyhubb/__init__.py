@@ -101,4 +101,24 @@ class client(object):
         details = requests.get(self.url + 'Myconference?$filter=AttendeeId eq ' + attendeeID, headers=self.headers)
         prettyJson(details)
         return details.json()
-
+    # This will generically send a POST request
+    def post(self, section, body) -> json:
+        details = requests.post(self.url + section, headers=self.headers, json=body)
+        prettyJson(details)
+        return details.json()
+    # This will generically send a PUT request
+    def put(self, section, body) -> json:
+        details = requests.put(self.url + section, headers=self.headers, json=body)
+        prettyJson(details)
+        return details.json()
+    # This will generically send a DELETE request
+    # Make sure to include the specific ID for what object to delete
+    def delete(self, section, numId) -> json:
+        details = requests.put(self.url + section + '/' + numId, headers=self.headers)
+        prettyJson(details)
+        return details.json()
+    # This will generically send a PATCH request
+    def patch(self, section, body) -> json:
+        details = requests.patch(self.url + section, headers=self.headers, data=body)
+        prettyJson(details)
+        return details.json()
