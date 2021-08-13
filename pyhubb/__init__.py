@@ -8,7 +8,7 @@ import time
 # Pickling to cache data while CLI runs.
 def save_object(obj):
     try:
-        with open("client.pickle", "wb") as f:
+        with open(".client.pickle", "wb") as f:
             pickle.dump(obj, f)
     except Exception as ex:
         print("Error during pickling object (Possibly unsupported):", ex)
@@ -38,6 +38,22 @@ def exists(filename):
 # Prettyprint JSON to terminal
 def prettyJson(respon):
     print(json.dumps(respon.json(), indent=4))
+
+# Authentication workflow for getting a bearer token
+# - Returns an authentication token, token type, and expiry as python dict
+def auth(clientId, clientSecret, scopeNum):
+    grantType = "client_credentials"
+    endpoint = "https://ngapi.hubb.me/auth/token"
+    requestBody = {
+        "client_id": f"{clientId}",
+        "client_secret": f"{clientSecret}",
+        "scope": f"{scopeNum}",
+        "grant_type": f"{grantType}"
+    }
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    response = requests.post(endpoint, data=requestBody, headers=headers)
+    authdict = json.loads(json.dumps(response.json(), indent=4))
+    return authdict
 
 class client(object):
     # Create client
@@ -69,7 +85,7 @@ class client(object):
         #print(self.url + section + '?expand=' + fields)
         details = requests.get(self.url + section + '?$expand=' + fields, headers=self.headers)
         prettyJson(details)
-        return details
+        return details.json()
     # This allows you to filter the data to only what you want to see.
     # Only items where the expression evaluates to TRUE are included in the response.
     def filt(self, section, fields) -> json:

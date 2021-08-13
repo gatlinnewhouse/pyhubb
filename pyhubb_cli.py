@@ -1,5 +1,6 @@
 import pyhubb
 import fire
+import pprint
 
 class pyhubbcli():
     """
@@ -7,16 +8,30 @@ class pyhubbcli():
     """
     def __init__(self):
         pass
-       
-    def create(self, eventid: str, accessToken: str, expiry:str, version: str = 'v1'):
+    
+    def authenticate(self):
+        """
+        Does authentication handshake process in order to return the auth creds and create a client
+        """
+        clientId = input('What is the client_id? ')
+        clientSecret = input('What is the client_secret or password set for credentials? ')
+        scope = input('What is the scope of the API access? ')
+        resp = pyhubb.auth(clientId, clientSecret, scope)
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(resp)
+        accToken = resp.get("access_token")
+        exp = resp.get("expires_in")
+        pyhubbcli._create(accToken, exp)
+    
+    def _create(accessToken, expiry):
         """
         Initializes client object with Hubb.me API endpoint data. Use Postman to get your accessToken.
-        :param eventid: four digit code given by account manager
         :param accessToken: the value from the initial handshake done with postman
         :param expiry: number (in seconds) which is when your authentication will expire
-        :param version: API version, set by default to v1
         """
         tokentype = 'bearer'
+        eventid = input('What is the event id? ')
+        version = input('What is the API version (current is \"v1\")? ')
         apiclient = pyhubb.client(eventid, accessToken, tokentype, expiry, version)
         print('Client created! Pickled locally')
         
@@ -27,8 +42,8 @@ class pyhubbcli():
         :param fields: fields vary with the endpoint selected. View the docs at https://ngapi.hubb.me/swagger/ui/index for more information, these are all GET requests.
         :param query: Options which allow you to 'expand' a data field for details, 'filter' the data to what you want to see, 'select' to limit data fields returned, 'order' data by certain parameters, or limit the data to the 'top' X results (put your number in the fields parameter)
         """
-        pyhubb.exists('client.pickle')
-        apiclient = pyhubb.client.load_object('client.pickle')
+        pyhubb.exists('.client.pickle')
+        apiclient = pyhubb.client.load_object('.client.pickle')
         # no switch statement in python, if elif go brrr
         if query == 'expand':
             apiclient.expand(section, fields)
